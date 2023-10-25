@@ -31,7 +31,7 @@ vector<vector<int>>  getCombinations(const int& m, int n) {
 
 class Solution {
 public:
-    //day 24.OCT.2023 2698求一个整数的惩罚数1 正经算法
+    //day 24.OCT.2023 2698 求一个整数的惩罚数1 正经算法
     int punishmentNumber1(int n) {
         if (n == 1000) return 10804657;
         vector<vector<vector<int>>> combinations;
@@ -63,7 +63,7 @@ public:
         }
         return total;
     }
-    //day 24.OCT.2023 2698求一个整数的惩罚数2 根据1直接得到为数不多的惩罚数，然后=+
+    //day 24.OCT.2023 2698 求一个整数的惩罚数2 根据1直接得到为数不多的惩罚数，然后=+
     int punishmentNumber2(int n) {
         int punishmentNum[29] = { 1 ,9 ,10 ,36 ,45 ,55 ,82, 91, 99 ,100 ,235, 297, 369 ,370 ,379 ,414, 657 ,675, 703, 756, 792, 909 ,918 ,945 ,964 ,990 ,991 ,999 ,1000 };
         int total = 0;
@@ -72,6 +72,22 @@ public:
                 total += punishmentNum[i] * punishmentNum[i];
         }
         return total;
+    }
+    //day 25.OCT.2023 2520 统计能整除数字的位数
+    int countDigits(int num) {
+        int canDivide[9] = { 0,0,0,0,0,0,0,0,0 };
+        int sum = 0;
+        for (int i = 1; i <= 9; i++)
+        {
+            if (num % i == 0) {
+                canDivide[i - 1] = 1;
+            }
+        }
+        while (num > 0) {
+            if (canDivide[num % 10 - 1] == 1)sum++;
+            num = num / 10;
+        }
+        return sum;
     }
 };
 int main()
