@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <numeric>
+#include <algorithm>
 
 using namespace std;
 void generateCombinations(int m, int n, int idx, vector<int>& current, vector<vector<int>>& combinations) {
@@ -89,7 +90,25 @@ public:
         }
         return sum;
     }
-};
+    //day 26.OCT.2023 1465 切割后面积最大的蛋糕
+    int maxArea(int h, int w, vector<int>& horizontalCuts, vector<int>& verticalCuts) {
+        const int mod = 1e9 + 7;
+        horizontalCuts.push_back(h);
+        verticalCuts.push_back(w);
+        sort(horizontalCuts.begin(), horizontalCuts.end());
+        sort(verticalCuts.begin(), verticalCuts.end());
+        long long height = horizontalCuts[0];
+        long long weight = verticalCuts[0];
+        for (int i = 0; i < horizontalCuts.size() - 1; i++)
+        {
+            if (height < horizontalCuts[i + 1] - horizontalCuts[i])height = horizontalCuts[i + 1] - horizontalCuts[i];
+        }
+        for (int i = 0; i < verticalCuts.size() - 1; i++)
+        {
+            if (weight < verticalCuts[i + 1] - verticalCuts[i])weight = verticalCuts[i + 1] - verticalCuts[i];
+        }
+        return weight *height % mod;
+    };
 int main()
 {
     int punishmentNum[29] = { 1 ,9 ,10 ,36 ,45 ,55 ,82, 91, 99 ,100 ,235, 297, 369 ,370 ,379 ,414, 657 ,675, 703, 756, 792, 909 ,918 ,945 ,964 ,990 ,991 ,999 ,1000 };
