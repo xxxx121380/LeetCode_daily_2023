@@ -109,6 +109,17 @@ public:
         }
         return weight * height % mod;
     };
+    //day 27.OCT.2023 2558 从数量最多的堆取走礼物
+    long long pickGifts(vector<int>& gifts, int k) {
+        for (int i = 0; i < k; i++)
+        {
+            auto max_it = max_element(gifts.begin(), gifts.end());
+            int position = distance(gifts.begin(), max_it);
+            gifts[position] = floor(sqrt(gifts[position]));
+        }
+        return accumulate(gifts.begin(), gifts.end(), 0LL);
+    }
+
 };
 int main()
 {
