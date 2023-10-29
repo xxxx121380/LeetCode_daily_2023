@@ -136,12 +136,28 @@ public:
         }
         return 1;
     }
+    //day 29.OCT.2023 275 H 指数 II
+    int hIndex2(vector<int>& citations) {
+        int left = 0;
+        int right = citations.size() - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            //当前引用值 要比剩余量多
+            if (citations[mid] >= citations.size() - mid) {
+                right = mid - 1;
+            }
+            else {
+                left = mid + 1;
+            }
+        }
+        return citations.size() - left;
+    }
 };
 int main()
 {
     Solution solution;
-    vector<int> citations = { 100 };
-    cout << solution.hIndex(citations);
+    vector<int> citations = { 0,1,3,5,6 };
+    cout << solution.hIndex2(citations);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
