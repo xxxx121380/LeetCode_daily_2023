@@ -119,18 +119,29 @@ public:
         }
         return accumulate(gifts.begin(), gifts.end(), 0LL);
     }
-
+    //day 28.OCT.2023 274 H 指数
+    int hIndex(vector<int>& citations) {
+        int ci[1000];
+        int sizeCi = citations.size();
+        fill(ci, ci + 1000, 0);
+        for (int i = 0; i < citations.size(); i++) {
+            ci[citations[i]]++;
+        }
+        //t 表示当前选中多少篇 从1000往下，需要保证选中篇数>指数i
+        int t = 0;
+        for (int i = 999; i >= 0; i--) {
+            t += ci[i];
+            if (t >= i)
+                return i;
+        }
+        return 1;
+    }
 };
 int main()
 {
-    int punishmentNum[29] = { 1 ,9 ,10 ,36 ,45 ,55 ,82, 91, 99 ,100 ,235, 297, 369 ,370 ,379 ,414, 657 ,675, 703, 756, 792, 909 ,918 ,945 ,964 ,990 ,991 ,999 ,1000 };
-    int total = 0;
-    int t = 1000;
-    for (int i = 0; i < 29; i++) {
-        if (punishmentNum[i] <= t)
-            total += punishmentNum[i] * punishmentNum[i];
-    }
-    cout << total;
+    Solution solution;
+    vector<int> citations = { 100 };
+    cout << solution.hIndex(citations);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
