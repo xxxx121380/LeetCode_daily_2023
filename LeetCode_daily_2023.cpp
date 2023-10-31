@@ -6,7 +6,9 @@
 #include <vector>
 #include <numeric>
 #include <algorithm>
-
+#include <unordered_map>
+#include <unordered_set>
+#include <functional>
 using namespace std;
 void generateCombinations(int m, int n, int idx, vector<int>& current, vector<vector<int>>& combinations) {
     int currentSum = accumulate(current.begin(), current.end(), 0);
@@ -152,12 +154,52 @@ public:
         }
         return citations.size() - left;
     }
+    //day 30.OCT.2003 每棵子树内缺失的最小基因值
+    vector<int> smallestMissingValueSubtree(vector<int>& parents, vector<int>& nums) {
+        int n = parents.size();
+        vector<vector<int>> tree(n);
+        for (int i = 1; i < n; i++) {
+            tree[parents[i]].push_back(i);
+        }
+
+        unordered_set<int> values;
+        vector<int> visited(n, 0);
+        function<void(int)> dfs = [&](int node) {
+            if (visited[node]) {
+                return;
+            }
+            visited[node] = 1;
+            values.insert(nums[node]);
+            for (auto child : tree[node]) {
+                dfs(child);
+            }
+        };
+
+        vector<int> res(n, 1);
+        int iNode = 1, node = -1;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 1) {
+                node = i;
+                break;
+            }
+        }
+        while (node != -1) {
+            dfs(node);
+            while (values.count(iNode)) {
+                iNode++;
+            }
+            res[node] = iNode;
+            node = parents[node];
+        }
+        return res;
+    }
 };
 int main()
 {
     Solution solution;
-    vector<int> citations = { 0,1,3,5,6 };
-    cout << solution.hIndex2(citations);
+    vector<int> parents = { -1,0,1,0,3,3 };
+    vector<int> nums = { 5,4,6,2,1,3 };
+    solution.smallestMissingValueSubtree(parents, nums);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
