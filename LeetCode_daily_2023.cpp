@@ -9,6 +9,9 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <functional>
+#include <queue>
+#include <stack>
+#include <set>
 using namespace std;
 void generateCombinations(int m, int n, int idx, vector<int>& current, vector<vector<int>>& combinations) {
     int currentSum = accumulate(current.begin(), current.end(), 0);
@@ -193,13 +196,88 @@ public:
         }
         return res;
     }
+    //day 31.OCT.2023 
+    int maximumInvitations(vector<int>& favorite) {
+        unordered_map<int, int> adjList;
+        pair<int, int> cycleNodes = { -1, -1 };
+        vector<bool> visited;
+        set<int> pathSet;
+        vector<int> path;
+        int maxCycleLength = 2, maxChainLength = 0;
+        int n = favorite.size();
+        for (int i = 0; i < n; i++) {
+            adjList[i] = favorite[i];
+        }
+
+        function<void(int)> dfs = [&](int node) {
+            if (pathSet.find(node) != pathSet.end()) {
+                if (path.back() == adjList[node]) {
+                    cycleNodes = { node, path.back() };
+                }
+                maxCycleLength = std::max(maxCycleLength, (int)(path.size() - distance(path.begin(), find(path.begin(), path.end(), node))));
+                return;
+            }
+            if (visited[node]) {
+                return;
+            }
+            visited[node] = true;
+            path.push_back(node);
+            pathSet.insert(node);
+            if (adjList.find(node) != adjList.end()) {
+                dfs(adjList[node]);
+            }
+            path.pop_back();
+            pathSet.erase(node);
+        };
+
+        function<int(int)> getLongestSubchainLength = [&](int node) {
+            vector<bool> localVisited(adjList.size(), false);
+            localVisited[adjList[node]] = true;
+            queue<pair<int, int>> q;
+            q.push({ node, 0 });
+            int maxLength = 0;
+
+            while (!q.empty()) {
+                int currentNode = q.front().first;
+                int currentDepth = q.front().second;
+                q.pop();
+
+                if (localVisited[currentNode]) {
+                    continue;
+                }
+                localVisited[currentNode] = true;
+                maxLength = max(maxLength, currentDepth);
+
+                // Just check the nodes that point to the current node.
+                for (auto& pair : adjList) {
+                    if (pair.second == currentNode && !localVisited[pair.first]) {
+                        q.push({ pair.first, currentDepth + 1 });
+                    }
+                }
+            }
+            return maxLength;
+        };
+
+        visited.assign(adjList.size(), false);
+        for (auto& pair : adjList) {
+            if (!visited[pair.first]) {
+                path.clear();
+                pathSet.clear();
+                dfs(pair.first);
+                if (cycleNodes.first != -1 && cycleNodes.second != -1) {
+                    maxChainLength += 2 + getLongestSubchainLength(cycleNodes.first) + getLongestSubchainLength(cycleNodes.second);
+                    cycleNodes = { -1, -1 };
+                }
+            }
+        }
+        return max(maxCycleLength, maxChainLength);
+    }
 };
 int main()
 {
     Solution solution;
-    vector<int> parents = { -1,0,1,0,3,3 };
-    vector<int> nums = { 5,4,6,2,1,3 };
-    solution.smallestMissingValueSubtree(parents, nums);
+    vector<int> fav = { 6,4,4,5,0,3,3 };
+    cout<<solution.maximumInvitations(fav);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
