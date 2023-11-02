@@ -272,6 +272,37 @@ public:
         }
         return max(maxCycleLength, maxChainLength);
     }
+    //01.Nov.2023 2103 环和杆
+    int countPoints(string rings) {
+        int t[300] = { 0 };
+        for (int i = 0; i < rings.size() / 2; i++)
+        {
+            int ring = rings[i * 2 + 1] - '0';
+            switch (rings[i * 2])
+            {
+            case 'R':
+                t[ring * 3] = 1;
+                break;
+            case 'G':
+                t[ring * 3 + 1] = 1;
+                break;
+            case 'B':
+                t[ring * 3 + 2] = 1;
+
+                break;
+            default:
+                break;
+            }
+
+        }
+        int sum = 0;
+        for (int i = 0; i < 100; i++)
+        {
+            if (t[i * 3] + t[i * 3 + 1] + t[i * 3 + 2] == 3)
+                sum++;
+        }
+        return sum;
+    }
 };
 int main()
 {
