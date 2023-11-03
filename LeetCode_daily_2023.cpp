@@ -35,6 +35,21 @@ vector<vector<int>>  getCombinations(const int& m, int n) {
     return combinations;
 }
 
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next)
+        : val(_val), left(_left), right(_right), next(_next) {}
+};
+
 class Solution {
 public:
     //day 24.OCT.2023 2698 求一个整数的惩罚数1 正经算法
@@ -302,6 +317,33 @@ public:
                 sum++;
         }
         return sum;
+    }
+    //02.Nov.2023 117 填充每个节点的下一个右侧节点指针 II
+    Node* connect(Node* root) {
+        Node* now = root;
+        Node* nl = NULL;
+        Node* previous = NULL;
+        while (now != NULL) {
+            do {
+                if (nl == NULL) {
+                    nl = now->left != NULL ? now->left : now->right;
+                }
+                if (previous != NULL) {
+                    previous->next = now->left != NULL ? now->left : now->right;
+                }
+                if (now->left != NULL && now->right != NULL) {
+                    now->left->next = now->right;
+                }
+                if (now->left != NULL || now->right != NULL) {
+                    previous = now->right != NULL ? now->right : now->left;
+                }
+                now = now->next;
+            } while (now != NULL);
+            now = nl;
+            previous = NULL;
+            nl = NULL;
+        };
+        return root;
     }
 };
 int main()
