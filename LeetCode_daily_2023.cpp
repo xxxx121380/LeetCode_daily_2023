@@ -381,12 +381,29 @@ public:
         }
         return x;
     }
+    //04.Nov.2023 187 重复的DNA序列
+    vector<string> findRepeatedDnaSequences(string s) {
+        vector<string> all;
+        if (s.length() <= 10)return all;
+        unordered_map<string, int> substringCount;
+
+        for (int i = 0; i <= s.length() - 10; i++) {
+            string sub = s.substr(i, 10); // 截取从位置i开始的10个字符
+            substringCount[sub]++;
+
+            // 只有在子串第二次出现时才将其加入到结果数组中
+            if (substringCount[sub] == 2) {
+                all.push_back(sub);
+            }
+        }
+        return all;
+    }
 };
 int main()
 {
     Solution solution;
     vector<int> fav = { 6,4,4,5,0,3,3 };
-    cout<<solution.maximumInvitations(fav);
+    solution.findRepeatedDnaSequences("AAAAAAAAAAA");
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
