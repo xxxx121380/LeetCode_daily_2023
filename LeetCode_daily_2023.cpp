@@ -418,12 +418,40 @@ public:
         }
         return maxProduct;
     }
+    //06.Nov.2023 2586 统计范围内的元音字符串数
+    int vowelStrings(vector<string>& words, int left, int right) {
+        int sum = 0;
+        char vowels[5] = { 'a','e','i','o','u' };
+        for (int i = left; i <= right; i++) {
+            char a = words[i][0];
+            char b = words[i][words[i].length()-1];
+            int t = 0;
+            for (int j = 0; j < 5; j++) {
+                if (a == vowels[j])
+                {
+                    t++;
+                    break;
+                }
+            }
+            for (int j = 0; j < 5; j++) {
+                if (b == vowels[j])
+                {
+                    t++;
+                    break;
+                }
+            }
+            if (t==2) {
+                sum++;
+            }
+        }
+        return sum;
+    }
 };
 int main()
 {
     Solution solution;
-    vector<string> words = { "a","aa","aaa","aaaa" };
-    cout<<solution.maxProduct(words);
+    vector<string> words = { "hey","aeo","mu","ooo","artro" };
+    cout<<solution.vowelStrings(words,1,4);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
