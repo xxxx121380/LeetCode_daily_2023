@@ -34,7 +34,6 @@ vector<vector<int>>  getCombinations(const int& m, int n) {
     generateCombinations(m, n, 0,current, combinations);
     return combinations;
 }
-
 class Node {
 public:
     int val;
@@ -398,12 +397,33 @@ public:
         }
         return all;
     }
+    //05.Nov.2023 318 最大单词长度乘积
+    int maxProduct(vector<string>& words) {
+        int maxProduct = 0;
+        std::vector<int> masks(words.size(), 0);  // Bitmasks for each word
+        // Preparing the bitmasks. Each bit in the mask represents whether
+        // a character 'a' to 'z' is in the word.
+        for (int i = 0; i < words.size(); i++) {
+            for (char c : words[i]) {
+                masks[i] |= 1 << (c - 'a');
+            }
+        }
+        // Compare each pair of words
+        for (int i = 0; i < words.size(); i++) {
+            for (int j = i + 1; j < words.size(); j++) {
+                if ((masks[i] & masks[j]) == 0) {  // No common letters
+                    maxProduct = std::max(maxProduct, int(words[i].size() * words[j].size()));
+                }
+            }
+        }
+        return maxProduct;
+    }
 };
 int main()
 {
     Solution solution;
-    vector<int> fav = { 6,4,4,5,0,3,3 };
-    solution.findRepeatedDnaSequences("AAAAAAAAAAA");
+    vector<string> words = { "a","aa","aaa","aaaa" };
+    cout<<solution.maxProduct(words);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
