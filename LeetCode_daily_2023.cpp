@@ -446,12 +446,52 @@ public:
         }
         return sum;
     }
+    //07.Nov.2023 2609 最长平衡子字符串
+    int findTheLongestBalancedSubstring(string s) {
+
+        int balance = 0;
+        int maxLength = 0;
+        int tempLength = 0;
+        for (int i = 0; i < s.length(); i++)
+        {
+            balance = 0;
+            tempLength = 0;
+            string ss = s.substr(i);
+            char last = ss[0];
+            for (char c : ss) {
+                if (c == '0' && last == '1')
+                {
+                    balance = 1;
+                    tempLength = 1;
+                    last = c;
+                }
+                else {
+                    balance += (c == '0') ? 1 : -1;
+                    if (balance == 0) {
+                        tempLength += 1;
+                        maxLength = std::max(maxLength, tempLength);
+                        balance = 0;
+                        tempLength = 0;
+                    }
+                    else if (balance < 0) {
+                        balance = 0;
+                        tempLength = 0;
+                    }
+                    else {
+                        tempLength++;
+                    }
+                }
+                last = c;
+            }
+        }
+        return maxLength;
+    }
 };
 int main()
 {
     Solution solution;
     vector<string> words = { "hey","aeo","mu","ooo","artro" };
-    cout<<solution.vowelStrings(words,1,4);
+    cout<<solution.findTheLongestBalancedSubstring("001011");
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
