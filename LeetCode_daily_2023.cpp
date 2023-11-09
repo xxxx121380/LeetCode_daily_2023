@@ -486,6 +486,65 @@ public:
         }
         return maxLength;
     }
+
+    //08.Nov.2023 2258 逃离火灾
+
+    int maximumMinutes(vector<vector<int>>& grid) {
+        const int dirs[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+        int m = grid.size(), n = grid[0].size();
+        // 返回三个数，分别表示到达安全屋/安全屋左边/安全屋上边的最短时间
+        auto bfs = [&](vector<pair<int, int>>& q) -> tuple<int, int, int> {
+            vector<vector<int>> time(m, vector<int>(n, -1)); // -1 表示未访问
+            for (auto& [i, j] : q) {
+                time[i][j] = 0;
+            }
+            for (int t = 1; !q.empty(); t++) { // 每次循环向外扩展一圈
+                vector<pair<int, int>> nq;
+                for (auto& [i, j] : q) {
+                    for (auto& [dx, dy] : dirs) { // 枚举上下左右四个方向
+                        int x = i + dx, y = j + dy;
+                        if (0 <= x && x < m && 0 <= y && y < n && grid[x][y] == 0 && time[x][y] < 0) {
+                            time[x][y] = t;
+                            nq.emplace_back(x, y);
+                        }
+                    }
+                }
+                q = move(nq);
+            }
+            return { time[m - 1][n - 1], time[m - 1][n - 2], time[m - 2][n - 1] };
+        };
+
+        vector<pair<int, int>> q = { {0, 0} };
+        auto [man_to_house_time, m1, m2] = bfs(q);
+        if (man_to_house_time < 0) { // 人无法到安全屋
+            return -1;
+        }
+
+        vector<pair<int, int>> fire_pos;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    fire_pos.emplace_back(i, j);
+                }
+            }
+        }
+        auto [fire_to_house_time, f1, f2] = bfs(fire_pos); // 多个着火点同时跑 BFS
+        if (fire_to_house_time < 0) { // 火无法到安全屋
+            return 1'000'000'000;
+        }
+
+        int d = fire_to_house_time - man_to_house_time;
+        if (d < 0) { // 火比人先到安全屋
+            return -1;
+        }
+
+        if (m1 != -1 && m1 + d < f1 || // 安全屋左边相邻格子，人比火先到
+            m2 != -1 && m2 + d < f2) { // 安全屋上边相邻格子，人比火先到
+            return d; // 图中第一种情况
+        }
+        return d - 1; // 图中第二种情况
+    }
+
 };
 int main()
 {
