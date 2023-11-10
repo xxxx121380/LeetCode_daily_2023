@@ -545,6 +545,17 @@ public:
         return d - 1; // 图中第二种情况
     }
 
+    //09.Nov.2023 2300 咒语和药水的成功对数
+    vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
+        sort(potions.begin(), potions.end());
+        vector<int> res;
+        for (auto& i : spells) {
+            long long t = (success + i - 1) / i - 1;
+            res.push_back(potions.size() - (upper_bound(potions.begin(), potions.end(), t) - potions.begin()));
+        }
+        return res;
+    }
+
 };
 int main()
 {
