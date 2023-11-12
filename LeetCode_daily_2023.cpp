@@ -12,6 +12,7 @@
 #include <queue>
 #include <stack>
 #include <set>
+#include <map>
 using namespace std;
 void generateCombinations(int m, int n, int idx, vector<int>& current, vector<vector<int>>& combinations) {
     int currentSum = accumulate(current.begin(), current.end(), 0);
@@ -50,6 +51,8 @@ public:
 };
 
 class Solution {
+private:
+    map<int, int> intervals;
 public:
     //day 24.OCT.2023 2698 求一个整数的惩罚数1 正经算法
     int punishmentNumber1(int n) {
@@ -595,8 +598,76 @@ public:
             }
         }
         return ret;
-
     }
+
+    RangeModule() {}
+
+    void addRange(int left, int right) {
+        auto it = intervals.upper_bound(left);
+        if (it != intervals.begin()) {
+            auto start = prev(it);
+            if (start->second >= right) {
+                return;
+            }
+            if (start->second >= left) {
+                left = start->first;
+                intervals.erase(start);
+            }
+        }
+        while (it != intervals.end() && it->first <= right) {
+            right = max(right, it->second);
+            it = intervals.erase(it);
+        }
+        intervals[left] = right;
+    }
+
+    bool queryRange(int left, int right) {
+        auto it = intervals.upper_bound(left);
+        if (it == intervals.begin()) {
+            return false;
+        }
+        it = prev(it);
+        return right <= it->second;
+    }
+
+    void removeRange(int left, int right) {
+        auto it = intervals.upper_bound(left);
+        if (it != intervals.begin()) {
+            auto start = prev(it);
+            if (start->second >= right) {
+                int ri = start->second;
+                if (start->first == left) {
+                    intervals.erase(start);
+                }
+                else {
+                    start->second = left;
+                }
+                if (right != ri) {
+                    intervals[right] = ri;
+                }
+                return;
+            }
+            else if (start->second > left) {
+                if (start->first == left) {
+                    intervals.erase(start);
+                }
+                else {
+                    start->second = left;
+                }
+            }
+        }
+        while (it != intervals.end() && it->first < right) {
+            if (it->second <= right) {
+                it = intervals.erase(it);
+            }
+            else {
+                intervals[right] = it->second;
+                intervals.erase(it);
+                break;
+            }
+        }
+    }
+
 };
 int main()
 {
