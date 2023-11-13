@@ -53,6 +53,10 @@ public:
 class Solution {
 private:
     map<int, int> intervals;
+    vector<int> sum; // sum[i] 表示第 i 个块的元素和
+    int size; // 块的大小
+    vector<int>& nums;
+
 public:
     //day 24.OCT.2023 2698 求一个整数的惩罚数1 正经算法
     int punishmentNumber1(int n) {
@@ -489,9 +493,7 @@ public:
         }
         return maxLength;
     }
-
     //08.Nov.2023 2258 逃离火灾
-
     int maximumMinutes(vector<vector<int>>& grid) {
         const int dirs[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
         int m = grid.size(), n = grid[0].size();
@@ -547,7 +549,6 @@ public:
         }
         return d - 1; // 图中第二种情况
     }
-
     //09.Nov.2023 2300 咒语和药水的成功对数
     vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
         sort(potions.begin(), potions.end());
@@ -558,7 +559,6 @@ public:
         }
         return res;
     }
-
     //10.Nov.2023 765 情侣牵手
     int minSwapsCouples(vector<int>& row) {
         int n = row.size();
@@ -599,9 +599,7 @@ public:
         }
         return ret;
     }
-
     RangeModule() {}
-
     void addRange(int left, int right) {
         auto it = intervals.upper_bound(left);
         if (it != intervals.begin()) {
@@ -620,7 +618,6 @@ public:
         }
         intervals[left] = right;
     }
-
     bool queryRange(int left, int right) {
         auto it = intervals.upper_bound(left);
         if (it == intervals.begin()) {
@@ -629,7 +626,6 @@ public:
         it = prev(it);
         return right <= it->second;
     }
-
     void removeRange(int left, int right) {
         auto it = intervals.upper_bound(left);
         if (it != intervals.begin()) {
@@ -666,6 +662,30 @@ public:
                 break;
             }
         }
+    }
+    NumArray(vector<int>& nums) : nums(nums) {
+        int n = nums.size();
+        size = sqrt(n);
+        sum.resize((n + size - 1) / size); // n/size 向上取整
+        for (int i = 0; i < n; i++) {
+            sum[i / size] += nums[i];
+        }
+    }
+
+    void update(int index, int val) {
+        sum[index / size] += val - nums[index];
+        nums[index] = val;
+    }
+
+    int sumRange(int left, int right) {
+        int b1 = left / size, i1 = left % size, b2 = right / size, i2 = right % size;
+        if (b1 == b2) { // 区间 [left, right] 在同一块中
+            return accumulate(nums.begin() + b1 * size + i1, nums.begin() + b1 * size + i2 + 1, 0);
+        }
+        int sum1 = accumulate(nums.begin() + b1 * size + i1, nums.begin() + b1 * size + size, 0);
+        int sum2 = accumulate(nums.begin() + b2 * size, nums.begin() + b2 * size + i2 + 1, 0);
+        int sum3 = accumulate(sum.begin() + b1 + 1, sum.begin() + b2, 0);
+        return sum1 + sum2 + sum3;
     }
 
 };
