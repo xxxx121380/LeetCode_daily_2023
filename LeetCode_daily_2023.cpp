@@ -599,7 +599,7 @@ public:
         }
         return ret;
     }
-    RangeModule() {}
+    void RangeModule() {};
     void addRange(int left, int right) {
         auto it = intervals.upper_bound(left);
         if (it != intervals.begin()) {
@@ -663,6 +663,7 @@ public:
             }
         }
     }
+    /*
     NumArray(vector<int>& nums) : nums(nums) {
         int n = nums.size();
         size = sqrt(n);
@@ -671,7 +672,7 @@ public:
             sum[i / size] += nums[i];
         }
     }
-
+    */
     void update(int index, int val) {
         sum[index / size] += val - nums[index];
         nums[index] = val;
@@ -712,8 +713,12 @@ public:
             if (cnt <= ans.first) {
                 ans = { cnt, i };
             }
-        }
+        };
         return ans.second;
+    }
+    int maximizeSum(vector<int>& nums, int k) {
+        auto max_it = std::max_element(nums.begin(), nums.end());
+        return ((*max_it + *max_it + k - 1) * k / 2);
     }
 };
 int main()
