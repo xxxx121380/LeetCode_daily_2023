@@ -716,6 +716,7 @@ public:
         };
         return ans.second;
     }
+    //2656. K 个元素的最大和
     int maximizeSum(vector<int>& nums, int k) {
         auto max_it = std::max_element(nums.begin(), nums.end());
         return ((*max_it + *max_it + k - 1) * k / 2);
